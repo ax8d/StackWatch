@@ -148,10 +148,12 @@ A dedup step had been dropped in an earlier revision, so the same CVE could appe
 ## 🚀 Install
 
 ```bash
-1. Open chrome://extensions
-2. Enable Developer mode (top-right toggle)
-3. Click "Load unpacked"
-4. Select this project folder
+1. Download the ZIP file
+2. Unzip StackWatch Main file
+3. Open chrome://extensions
+4. Enable Developer mode (top-right toggle)
+5. Click "Load unpacked"
+6. Select this project folder
 ```
 
 Then open the popup's **⚙ Settings**:

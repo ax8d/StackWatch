@@ -12,8 +12,24 @@
 [![Signatures](https://img.shields.io/badge/SIGNATURES-75-FF9A3D?style=for-the-badge&labelColor=1a1a1a)](#)
 [![CVE Sources](https://img.shields.io/badge/CVE_SOURCES-OSV.dev%20%7C%20NVD-FF5E00?style=for-the-badge&labelColor=1a1a1a)](#)
 [![License](https://img.shields.io/badge/LICENSE-MIT-FFB347?style=for-the-badge&labelColor=1a1a1a)](#)
+[![Privacy](https://img.shields.io/badge/DATA_COLLECTION-NONE-FF8A00?style=for-the-badge&labelColor=1a1a1a)](#)
 
 </div>
+
+<img src="assets/divider.svg" width="100%"/>
+
+## 📋 Table of Contents
+
+- [What is StackWatch?](#-what-is-stackwatch)
+- [Features](#-features)
+- [How It Works](#-how-it-works)
+- [Install](#-install)
+- [Permissions — Why StackWatch Asks For Them](#-permissions--why-stackwatch-asks-for-them)
+- [What's New in v2.0](#-whats-new-in-v20)
+- [Roadmap](#-roadmap)
+- [Contributing](#-contributing)
+- [FAQ](#-faq)
+- [License](#-license)
 
 <img src="assets/divider.svg" width="100%"/>
 
@@ -33,7 +49,7 @@ No guessing. No flat lists of "this site uses React." A version, a CVE, a fix.
 
 ### 🔍 Detection
 - Script / HTML / meta / global-variable regex
-- **DOM & CSS-selector matching** (new)
+- DOM & CSS-selector matching
 - Stylesheet content scan (`--tw-*` vars, etc.)
 - Header & cookie fingerprinting
 - CDN-URL inference
@@ -55,13 +71,81 @@ No guessing. No flat lists of "this site uses React." A version, a CVE, a fix.
 ### 🎨 Experience
 - Real brand icons (Simple Icons CDN)
 - Clean glass-card popup UI
-- Badge shows **confirmed vuln count only**
+- Badge shows confirmed vuln count only
 - Headers tab (CSP / HSTS / CORS analysis)
 - Survives MV3 service-worker restarts
 
 </td>
 </tr>
 </table>
+
+<img src="assets/divider.svg" width="100%"/>
+
+## 🧠 How It Works
+
+```
+   1. Visit a page
+        │
+        ▼
+   content/detector.js runs passively
+   (scripts, HTML, meta tags, globals,
+    DOM selectors, stylesheet vars)
+        │
+        ▼
+   background/service-worker.js
+   collects signals → matches against
+   75 signatures in lib/signatures.js
+        │
+        ▼
+   For every confirmed tech + version:
+   query OSV.dev + NVD (cached)
+        │
+        ▼
+   dedupe.js removes duplicate / near-duplicate CVEs
+        │
+        ▼
+   score.js computes a risk score
+   remediation.js attaches a suggested fix
+        │
+        ▼
+   Popup renders: Overview · Stack · Vulnerabilities · Headers
+```
+
+Everything happens **locally in your browser** — the only outbound calls are to OSV.dev, NVD, and the Simple Icons CDN for brand logos.
+
+<img src="assets/divider.svg" width="100%"/>
+
+## 🚀 Install
+
+```bash
+1. Download the ZIP file
+2. Unzip the StackWatch folder
+3. Open chrome://extensions
+4. Enable Developer mode (top-right toggle)
+5. Click "Load unpacked"
+6. Select the unzipped project folder
+7. Pin it and you're ready to go!
+```
+
+Then open the popup's **⚙ Settings**:
+- Add an NVD API key *(optional, but recommended — raises your NVD rate limit significantly)*. Get a free one at [nvd.nist.gov/developers/request-an-api-key](https://nvd.nist.gov/developers/request-an-api-key). Click **Show** to verify what you typed before saving.
+- Toggle **active probing** on/off
+
+<img src="assets/divider.svg" width="100%"/>
+
+## 🔐 Permissions — Why StackWatch Asks For Them
+
+A security tool asking for browser permissions should explain itself. Here's exactly what each one is for:
+
+| Permission | Why StackWatch needs it |
+|---|---|
+| `scripting` | Injects `content/detector.js` to read page signals (scripts, DOM, meta tags) — and to re-scan a tab on demand if its state was lost to a service-worker restart. |
+| `storage` | Caches per-tab detection results (`storage.session`) and CVE lookups (`storage.local`) so you're not re-querying OSV/NVD on every popup open. |
+| `webRequest` / `declarativeNetRequest` | Reads response headers (`Server`, `X-Powered-By`, CDN headers, CSP/HSTS) for header-based fingerprinting and the Headers tab. |
+| `activeTab` | Lets the popup act on the tab you're currently viewing without requesting access to every tab you've ever opened. |
+| Host permissions (`<all_urls>`) | Needed to detect tech on *any* site you choose to scan — StackWatch only acts on tabs you visit, it does not crawl or scan in the background. |
+
+**StackWatch does not collect, transmit, or sell any browsing data.** Detected tech and CVE results stay in your local browser storage. The only third-party network calls are read-only lookups to OSV.dev, NVD, and the Simple Icons CDN.
 
 <img src="assets/divider.svg" width="100%"/>
 
@@ -95,9 +179,6 @@ Added it, plus a stylesheet-content scan for frameworks like **Tailwind** that c
 
 **Signature count: 36 → 75.**
 
-> [!NOTE]
-> Wappalyzer can sometimes show an exact Next.js patch version. The precise client-side mechanism for that isn't reliable in production builds, so StackWatch detects Next.js reliably but won't always surface that exact patch number — said so rather than faking it.
-
 </details>
 
 <details>
@@ -105,9 +186,6 @@ Added it, plus a stylesheet-content scan for frameworks like **Tailwind** that c
 <br/>
 
 Pixel-art badges are gone. Icons now come from the **Simple Icons CDN** (`cdn.simpleicons.org/<slug>`) — actual brand logos. Coverage isn't 1:1 for 75+ signatures, so every icon has an `onerror` fallback to a clean line-icon glyph per category instead of a broken image.
-
-> [!NOTE]
-> Requires internet access to load. Offline, you'll see the line-icon fallback throughout — intentional graceful degradation, not a bug.
 
 </details>
 
@@ -127,9 +205,6 @@ The badge now shows **only the count of confirmed vulnerable components**, and s
 
 Full pivot away from the pixel/terminal look: white/soft-gray background, indigo brand accent, rounded-2xl cards with soft shadows, pill badges and buttons, a subtle gradient blob behind the header mark. Monospace is now reserved for actual data (CVE IDs, versions, hostname) rather than the whole UI.
 
-> [!NOTE]
-> The three Dribbble references couldn't be loaded directly (JS-rendered shot pages, nothing exposed to `fetch`), so this was built from the genre they're clearly part of — clean light fintech/AI-SaaS — rather than a pixel-accurate copy of any one of them.
-
 </details>
 
 <details>
@@ -145,77 +220,55 @@ A dedup step had been dropped in an earlier revision, so the same CVE could appe
 
 <img src="assets/divider.svg" width="100%"/>
 
-## 🚀 Install
+## 🗺️ Roadmap
+
+- [ ] Chrome Web Store listing (currently unpacked-install only)
+- [ ] Firefox / Manifest V2-compatible build
+- [ ] Export scan results as JSON/PDF report
+- [ ] Historical scan comparison ("what changed since last visit")
+- [ ] Bulk-scan mode for a list of URLs
+- [ ] Configurable signature pack updates without a full extension update
+
+Have an idea? Open an issue — see [Contributing](#-contributing) below.
+
+<img src="assets/divider.svg" width="100%"/>
+
+## 🤝 Contributing
+
+Contributions are welcome, especially:
+- **New signatures** for `lib/signatures.js` (frameworks/libraries StackWatch doesn't detect yet)
+- **Icon mappings** for `lib/tech-icons.js`
+- Bug reports with a reproducible URL or screenshot
 
 ```bash
-1. Download the ZIP file
-2. Unzip StackWatch Main file
-3. Open chrome://extensions
-4. Enable Developer mode (top-right toggle)
-5. Click "Load unpacked"
-6. Select this project folder
-7. Pin it and you're ready to go!
+git clone https://github.com/<your-username>/StackWatch.git
+cd StackWatch
+# load unpacked in chrome://extensions to test changes live
 ```
 
-Then open the popup's **⚙ Settings**:
-- Add an NVD API key (click **Show** to verify what you typed)
-- Toggle **active probing** on/off
+Open a pull request with a clear description of what changed and why. For larger changes, open an issue first so we can discuss the approach.
 
 <img src="assets/divider.svg" width="100%"/>
 
-## 🏗️ Architecture
+## ❓ FAQ
 
-```
-content/detector.js       passive detection: script/html/meta/global regex,
-                           DOM-selector existence, stylesheet content scan.
-                           Re-injectable on demand.
+**Does StackWatch slow down my browsing?**
+No — passive detection runs once per page load and is lightweight. Active probing (optional, off by default) makes a few extra requests only when you trigger it.
 
-background/service-worker.js
-  ├─ chrome.storage.session-backed per-tab state (survives worker restarts)
-  ├─ on-demand rescan via chrome.scripting.executeScript
-  ├─ header/cookie/CDN-URL detection, active probing, comment sniffing
-  ├─ CVE lookup (cached per-product), local version-range matching,
-  │  dedup + remediation + scoring
-  └─ badge: confirmed-vulnerability count only
+**Why didn't it detect a technology I know is there?**
+Some frameworks (Django, Laravel, Rails) only show up via cookies on a real page load, not on-demand rescans. Others may simply not have a signature yet — feel free to open an issue or contribute one.
 
-lib/
-  ├─ signatures.js        75 signatures, incl. dom/cssVarScan methods
-  ├─ tech-icons.js         Simple Icons CDN mapping + line-icon fallback
-  ├─ dedupe.js              dedupeByCveId() + groupNearDuplicates()
-  ├─ remediation.js         suggestFixedVersionOsv/Nvd()
-  ├─ version-match.js      local version-range matching (confirmed vs unconfirmed)
-  ├─ cvss.js                CVSS v3.1 score calculator from a vector string
-  ├─ osv-client.js          full per-product vuln list, cached
-  ├─ nvd-client.js          full per-product vuln list, cached
-  ├─ header-signals.js     CSP / HSTS / CORS / etc. analysis
-  ├─ score.js               risk score + rubric-bar breakdown
-  └─ cache.js                chrome.storage.local cache
+**Is a "vulnerable version" finding a guarantee I'm exploitable?**
+No. It means the detected version matches a known CVE's affected range. Treat it as **needs review**, not a verdict — check the linked NVD/OSV advisory for exploitability details.
 
-popup/
-  ├─ Overview
-  ├─ Stack            (Wappalyzer-style grid, real icons)
-  ├─ Vulnerabilities  (grouped CVEs + fix guidance)
-  └─ Headers
-```
+**Does this work on every site?**
+Yes, on any tab you open the popup on — StackWatch only acts on the active tab you choose to scan, never in the background across your other tabs.
 
 <img src="assets/divider.svg" width="100%"/>
 
-## ⚠️ Known Limitations
+## 📄 License
 
-> [!WARNING]
-> **Cookie fingerprinting on re-injected tabs.** On-demand rescans (the cached-tab fix) can't see `Set-Cookie` — cookie-fingerprinted frameworks (Django, Laravel, Rails, etc.) only resolve from a real page-load detection.
-
-> [!WARNING]
-> **Near-duplicate advisory grouping is heuristic** (word-overlap, not exact) — it can occasionally under- or over-cluster. Nothing is hidden, only grouped for display.
-
-> [!NOTE]
-> NVD pagination caps at 100 results/product. CDN-inferred packages are a best-effort name guess. A "vulnerable version" doesn't mean "exploitable in practice" — treat confirmed findings as **needs review**, not a verdict.
-
-> [!NOTE]
-> Icon coverage is best-effort for less-common packages; unmapped or failed icons fall back to a category glyph rather than breaking.
-
-> [!CAUTION]
-> No exploitation walkthroughs, by design. See the in-app **References** (NVD/OSV's own labeled links) and the **Fix-available** line instead.
+Released under the **MIT License** — free to use, modify, and distribute. See [`LICENSE`](LICENSE) for full terms.
 
 <img src="assets/divider.svg" width="100%"/>
 

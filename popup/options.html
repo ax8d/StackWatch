@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>StackWatch Settings</title>
+<link rel="stylesheet" href="options.css" />
+</head>
+<body>
+  <div class="sw-options">
+    <h1>StackWatch settings</h1>
+
+    <section class="sw-field">
+      <label for="nvd-key">NVD API key</label>
+      <p class="sw-hint">
+        Free — improves rate limits for server-software CVE lookups (Apache, nginx, PHP, IIS, WordPress core).
+        Get one at <a href="https://nvd.nist.gov/developers/request-an-api-key" target="_blank" rel="noopener">nvd.nist.gov/developers/request-an-api-key</a>.
+        Hidden by default since it's a credential — click Show to reveal it.
+      </p>
+      <div class="sw-key-row">
+        <input type="password" id="nvd-key" placeholder="Paste your NVD API key" autocomplete="off" spellcheck="false" />
+        <button type="button" id="toggle-key-btn" class="sw-toggle-btn">Show</button>
+      </div>
+    </section>
+
+    <section class="sw-field sw-toggle-field">
+      <div>
+        <label for="active-probing">Active probing</label>
+        <p class="sw-hint">
+          Two things, both opt-in together: (1) checks a small set of known file paths (like
+          <code>/wp-login.php</code> or <code>/readme.html</code>) on the site you're visiting to confirm
+          CMS/version details headers alone can't reveal, and (2) fetches a same-site CSS/JS asset file
+          to read its leading version comment when a library's filename and headers don't expose a version.
+          Both send a few extra requests to that site's server — some site owners may log this as scanning activity.
+        </p>
+      </div>
+      <label class="sw-switch">
+        <input type="checkbox" id="active-probing" />
+        <span class="sw-slider"></span>
+      </label>
+    </section>
+
+    <button id="save-btn" class="sw-save-btn">Save settings</button>
+    <span id="save-status" class="sw-save-status"></span>
+  </div>
+
+  <script src="options.js" type="module"></script>
+</body>
+</html>

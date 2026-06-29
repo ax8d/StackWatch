@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>StackWatch</title>
+<link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <div class="sw-app">
+
+    <header class="sw-header">
+      <div class="sw-header-blob"></div>
+      <div class="sw-brand">
+        <span class="sw-logo">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="3" y="3" width="7" height="7" rx="2" fill="white"/>
+            <rect x="14" y="3" width="7" height="7" rx="2" fill="white" opacity="0.55"/>
+            <rect x="3" y="14" width="7" height="7" rx="2" fill="white" opacity="0.55"/>
+            <rect x="14" y="14" width="7" height="7" rx="2" fill="white"/>
+          </svg>
+        </span>
+        <span class="sw-brand-name">StackWatch</span>
+      </div>
+      <div class="sw-site-pill"><span id="sw-hostname">—</span></div>
+      <div class="sw-header-actions">
+        <button id="sw-rescan-btn" class="sw-icon-btn" title="Rescan this page">⟲</button>
+        <button id="sw-options-btn" class="sw-icon-btn" title="Settings">⚙</button>
+      </div>
+    </header>
+
+    <section class="sw-hero" id="sw-hero">
+      <div class="sw-score-block">
+        <div class="sw-score-number" id="sw-score-number">—</div>
+        <div class="sw-score-tier" id="sw-score-tier">Scanning</div>
+      </div>
+      <div class="sw-stackcore-wrap">
+        <div class="sw-stackcore" id="sw-stackcore"></div>
+      </div>
+    </section>
+
+    <section class="sw-categories" id="sw-categories"></section>
+
+    <nav class="sw-tabs" id="sw-tabs">
+      <button class="sw-tab active" data-tab="overview">Overview</button>
+      <button class="sw-tab" data-tab="stack">Stack</button>
+      <button class="sw-tab" data-tab="vulns">Vulnerabilities</button>
+      <button class="sw-tab" data-tab="headers">Headers</button>
+    </nav>
+
+    <div class="sw-pills hidden" id="sw-pills">
+      <button class="sw-pill critical active" data-sev="critical">Critical</button>
+      <button class="sw-pill high active" data-sev="high">High</button>
+      <button class="sw-pill medium active" data-sev="medium">Medium</button>
+      <button class="sw-pill low active" data-sev="low">Low</button>
+      <button class="sw-pill info active" data-sev="info">Info</button>
+    </div>
+
+    <main class="sw-content" id="sw-content">
+      <div class="sw-status" id="sw-status">Detecting technologies…</div>
+
+      <div class="sw-tabpanel" id="panel-overview"></div>
+      <div class="sw-tabpanel hidden" id="panel-stack"></div>
+      <div class="sw-tabpanel hidden" id="panel-vulns"></div>
+      <div class="sw-tabpanel hidden" id="panel-headers"></div>
+    </main>
+
+    <footer class="sw-footer">
+      <button id="sw-export-btn" class="sw-footer-btn primary">Export report</button>
+      <button id="sw-copy-btn" class="sw-footer-btn">Copy summary</button>
+      <span class="sw-live-status" id="sw-live-status"><span class="sw-live-dot" id="sw-live-dot"></span><span id="sw-live-text">idle</span></span>
+    </footer>
+  </div>
+
+  <script src="popup.js" type="module"></script>
+</body>
+</html>

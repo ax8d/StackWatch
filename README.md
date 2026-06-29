@@ -154,6 +154,7 @@ A dedup step had been dropped in an earlier revision, so the same CVE could appe
 4. Enable Developer mode (top-right toggle)
 5. Click "Load unpacked"
 6. Select this project folder
+7. Pin it and you're ready to go!
 ```
 
 Then open the popup's **⚙ Settings**:

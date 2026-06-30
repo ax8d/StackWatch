@@ -124,7 +124,7 @@ Everything happens **locally in your browser** — the only outbound calls are t
 4. Enable Developer mode (top-right toggle)
 5. Click "Load unpacked"
 6. Select the unzipped project folder
-7. Pin it and you're ready to go!
+7. Pin it and you are ready to go!
 ```
 
 Then open the popup's **⚙ Settings**:

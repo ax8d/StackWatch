@@ -118,7 +118,7 @@ Everything happens **locally in your browser** — the only outbound calls are t
 ## 🚀 Install
 
 ```bash
-1. Download the ZIP file
+1. Download the ZIP file (https://github.com/ax8d/StackWatch/archive/refs/heads/main.zip)
 2. Unzip the StackWatch folder
 3. Open chrome://extensions
 4. Enable Developer mode (top-right toggle)
